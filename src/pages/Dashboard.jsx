@@ -1,8 +1,10 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  LineChart, Line, PieChart, Pie, Cell, Legend
+  PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { AppWindow, Users, CheckCircle, Clock, CalendarClock, Download } from 'lucide-react';
+import { AppWindow, Users, CheckCircle, Clock, CalendarClock, Download, AlertTriangle, ShieldCheck } from 'lucide-react';
 
 const attendanceData = [
   { day: 'Mon', present: 42, absent: 8 },
@@ -20,6 +22,23 @@ const projectStatusData = [
 ];
 
 const Dashboard = () => {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/dashboard/stats');
+        setStats(res.data);
+      } catch (err) {
+        console.error('Failed to fetch stats', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
+
   return (
     <>
       <div className="page-header">
@@ -32,40 +51,53 @@ const Dashboard = () => {
         </button>
       </div>
 
+      {stats?.anomalyDetected && (
+        <div className="card anomaly-card" style={{ marginBottom: '1.5rem', background: 'rgba(239, 68, 68, 0.1)', display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem' }}>
+          <AlertTriangle className="text-danger" size={28} />
+          <div>
+            <h3 style={{ margin: 0, color: 'var(--danger-color)', fontSize: '1rem' }}>AI Anomaly Detected</h3>
+            <p style={{ margin: 0, fontSize: '0.875rem' }}>{stats.anomalyMessage}</p>
+          </div>
+          <button className="btn btn-primary" style={{ marginLeft: 'auto', background: 'var(--danger-color)' }}>View Details</button>
+        </div>
+      )}
+
       <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
         <div className="card stat-card">
           <div className="stat-icon" style={{color: 'var(--primary-color)'}}><AppWindow /></div>
           <div className="stat-info">
-            <h3>Total Projects</h3>
-            <div className="value">17</div>
+            <h3>Total Applications</h3>
+            <div className="value">{stats?.totalApps || 17}</div>
           </div>
         </div>
         <div className="card stat-card">
-          <div className="stat-icon" style={{color: 'var(--success-color)'}}><CheckCircle /></div>
+          <div className="stat-icon" style={{color: 'var(--success-color)'}}><ShieldCheck /></div>
           <div className="stat-info">
-            <h3>Delivered Apps</h3>
-            <div className="value">8</div>
+            <h3>Active Users</h3>
+            <div className="value">{(stats?.totalActiveUsers / 1000000).toFixed(1)}M</div>
           </div>
         </div>
         <div className="card stat-card">
           <div className="stat-icon" style={{color: '#a855f7'}}><Clock /></div>
           <div className="stat-info">
-            <h3>In Progress</h3>
-            <div className="value">5</div>
+            <h3>Daily Active</h3>
+            <div className="value">{(stats?.dailyActiveUsers / 1000).toFixed(0)}K</div>
           </div>
         </div>
         <div className="card stat-card">
           <div className="stat-icon" style={{color: 'var(--warning-color)'}}><Users /></div>
           <div className="stat-info">
             <h3>Total Employees</h3>
-            <div className="value">50</div>
+            <div className="value">{stats?.totalEmployees || 142}</div>
           </div>
         </div>
         <div className="card stat-card">
           <div className="stat-icon" style={{color: '#06b6d4'}}><CalendarClock /></div>
           <div className="stat-info">
-            <h3>Present Today</h3>
-            <div className="value">48</div>
+            <h3>App Crashes</h3>
+            <div className="value" style={{ color: stats?.anomalyDetected ? 'var(--danger-color)' : 'inherit' }}>
+              {stats?.appCrashes24h || 34}
+            </div>
           </div>
         </div>
       </div>
@@ -92,7 +124,7 @@ const Dashboard = () => {
         </div>
 
         <div className="card chart-card">
-          <h3>Project Status Distribution</h3>
+          <h3>Application Status Distribution</h3>
           <div className="chart-container" style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -120,8 +152,8 @@ const Dashboard = () => {
             </ResponsiveContainer>
             
             <div style={{ position: 'absolute', textAlign: 'center', top: '45%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}>
-              <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1 }}>17</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 700, marginTop: '0.25rem' }}>TOTAL<br/>PROJECTS</div>
+              <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1 }}>{stats?.totalApps || 17}</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 700, marginTop: '0.25rem' }}>TOTAL<br/>APPS</div>
             </div>
           </div>
         </div>
@@ -131,3 +163,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

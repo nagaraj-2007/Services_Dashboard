@@ -286,37 +286,21 @@ const EmployeeDetail = () => {
           </div>
         </div>
 
-        {/* Salary Breakdown */}
+        {/* Awards & Recognition */}
         <div className="card">
-          <h3 style={{ marginBottom: '1rem' }}>💰 Salary Breakdown</h3>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
-            <div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>Annual CTC</div>
-              <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--success-color)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <IndianRupee size={20} />
-                {emp.salary.toLocaleString('en-IN')}
+          <h3 style={{ marginBottom: '1.25rem' }}>🏆 Performance Badges</h3>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            {[
+              { name: 'Top Performer', icon: <Trophy color="#f59e0b" />, desc: 'Delivered 5+ apps' },
+              { name: 'On-Time Hero', icon: <Clock color="#6366f1" />, desc: '0 delayed releases' },
+              { name: 'App Specialist', icon: <Star color="#a855f7" />, desc: 'Core platform dev' },
+            ].map(award => (
+              <div key={award.name} style={{ flex: 1, minWidth: 140, background: 'var(--bg-color)', padding: '1rem', borderRadius: 12, textAlign: 'center', border: '1px solid var(--border-color)' }}>
+                <div style={{ marginBottom: '0.5rem', display: 'flex', justifyContent: 'center' }}>{award.icon}</div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.25rem' }}>{award.name}</div>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{award.desc}</div>
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-                Monthly: ₹{Math.round(emp.salary / 12).toLocaleString('en-IN')}
-              </div>
-            </div>
-            <div style={{ flex: 1, minWidth: 180 }}>
-              {salaryData.map((s, i) => {
-                const pct = Math.round((s.value / emp.salary) * 100);
-                const colors = ['var(--primary-color)', '#a855f7', 'var(--warning-color)', 'var(--success-color)'];
-                return (
-                  <div key={s.name} style={{ marginBottom: '0.6rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', marginBottom: '0.2rem' }}>
-                      <span style={{ color: 'var(--text-secondary)' }}>{s.name}</span>
-                      <span style={{ fontWeight: 600 }}>₹{s.value.toLocaleString('en-IN')} ({pct}%)</span>
-                    </div>
-                    <div style={{ background: 'var(--border-color)', borderRadius: 99, height: 5, overflow: 'hidden' }}>
-                      <div style={{ width: `${pct}%`, height: '100%', background: colors[i] }} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            ))}
           </div>
         </div>
       </div>

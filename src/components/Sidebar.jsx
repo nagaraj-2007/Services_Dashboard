@@ -1,15 +1,16 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, AppWindow, Users, Settings, Activity, Server, Calendar } from 'lucide-react';
+import { LayoutDashboard, AppWindow, Users, Settings, Activity, Server, Calendar, IndianRupee } from 'lucide-react';
 
 const Sidebar = () => {
   const location = useLocation();
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Projects', path: '/apps', icon: AppWindow },
+    { name: 'Application Hub', path: '/apps', icon: AppWindow },
     { name: 'Employees', path: '/employees', icon: Users },
     { name: 'Attendance', path: '/attendance', icon: Calendar },
-    { name: 'System Monitor', path: '/system', icon: Server },
+    { name: 'Command Center', path: '/command-center', icon: Activity },
+    { name: 'Accounts', path: '/accounts', icon: IndianRupee },
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
 

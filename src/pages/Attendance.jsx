@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, XCircle, Clock, ChevronRight, Download } from 'lucide-react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const employees = [
   {
@@ -14,7 +16,6 @@ const employees = [
     daysPresent: 22,
     daysAbsent: 1,
     daysLeave: 0,
-    salary: 120000,
   },
   {
     id: 'E102',
@@ -28,7 +29,6 @@ const employees = [
     daysPresent: 20,
     daysAbsent: 2,
     daysLeave: 1,
-    salary: 95000,
   },
   {
     id: 'E103',
@@ -42,7 +42,6 @@ const employees = [
     daysPresent: 18,
     daysAbsent: 4,
     daysLeave: 1,
-    salary: 65000,
   },
   {
     id: 'E104',
@@ -56,7 +55,6 @@ const employees = [
     daysPresent: 21,
     daysAbsent: 1,
     daysLeave: 1,
-    salary: 72000,
   },
   {
     id: 'E105',
@@ -70,7 +68,6 @@ const employees = [
     daysPresent: 23,
     daysAbsent: 0,
     daysLeave: 0,
-    salary: 88000,
   },
   {
     id: 'E106',
@@ -84,7 +81,6 @@ const employees = [
     daysPresent: 19,
     daysAbsent: 1,
     daysLeave: 3,
-    salary: 98000,
   },
 ];
 
@@ -102,6 +98,23 @@ const today = new Date().toLocaleDateString('en-IN', {
 const Attendance = () => {
   const navigate = useNavigate();
 
+  const exportPDF = () => {
+    const doc = new jsPDF();
+    doc.text('Employee Attendance Report', 14, 15);
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 22);
+    
+    const tableData = employees.map(e => [e.id, e.name, e.dept, e.status, e.assignedProject, e.daysPresent]);
+    doc.autoTable({
+      head: [['ID', 'Name', 'Department', 'Status', 'Project', 'Days Present']],
+      body: tableData,
+      startY: 30,
+      theme: 'grid'
+    });
+    
+    doc.save('attendance_report.pdf');
+  };
+
   const presentCount = employees.filter(e => e.status === 'Present').length;
   const absentCount = employees.filter(e => e.status === 'Absent').length;
   const lateCount = employees.filter(e => e.status === 'Late').length;
@@ -114,12 +127,11 @@ const Attendance = () => {
           <h1 className="page-title">Attendance</h1>
           <p className="page-subtitle">{today} — Click any employee to view their full dashboard</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={exportPDF}>
           <Download size={16} /> Export Report
         </button>
       </div>
 
-      {/* Summary cards */}
       <div className="stat-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', marginBottom: '2rem' }}>
         <div className="card" style={{ borderTop: '3px solid var(--success-color)' }}>
           <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Present</div>
@@ -139,7 +151,6 @@ const Attendance = () => {
         </div>
       </div>
 
-      {/* Employee Table */}
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-color)' }}>
           <h3 style={{ marginBottom: 0 }}>Today's Attendance — {employees.length} Employees</h3>

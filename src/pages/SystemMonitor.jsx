@@ -15,13 +15,13 @@ const apiLatency = [
   { time: '10:30', ms: 180 }, { time: '10:35', ms: 135 },
 ];
 
-const SystemMonitor = () => {
+const CommandCenter = () => {
   return (
     <>
       <div className="page-header">
         <div>
-          <h1 className="page-title">System Monitor</h1>
-          <p className="page-subtitle">Real-time infrastructure health and performance metrics.</p>
+          <h1 className="page-title">Command Center</h1>
+          <p className="page-subtitle">Real-time infrastructure health and fleet operations.</p>
         </div>
         <button className="btn btn-primary" style={{ background: '#0f172a' }}>
           <RefreshCw size={16} /> Refresh Now
@@ -114,7 +114,85 @@ const SystemMonitor = () => {
           </div>
         </div>
 
+        <div className="card" style={{ gridColumn: '1 / -1', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <div>
+              <h3 style={{ marginBottom: '0.25rem' }}>Live Fleet Map</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Geographical distribution of active mobile app users and service personnel.</p>
+            </div>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem' }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--primary-color)' }}></div> Active Users
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem' }}>
+                <div style={{ width: 10, height: 10, borderRadius: '50%', background: 'var(--success-color)' }}></div> Staff
+              </div>
+            </div>
+          </div>
+          
+          <div style={{ 
+            height: '400px', 
+            background: 'var(--bg-color)', 
+            borderRadius: '12px', 
+            border: '1px solid var(--border-color)',
+            position: 'relative',
+            overflow: 'hidden',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            {/* Mock Map Background */}
+            <div style={{ 
+              position: 'absolute', 
+              width: '100%', 
+              height: '100%', 
+              opacity: 0.1,
+              background: 'radial-gradient(circle, var(--text-secondary) 1px, transparent 1px)',
+              backgroundSize: '20px 20px'
+            }}></div>
+            
+            {/* Mock Map Markers */}
+            {[
+              { t: '20%', l: '30%', c: 'var(--primary-color)' },
+              { t: '45%', l: '55%', c: 'var(--primary-color)' },
+              { t: '60%', l: '40%', c: 'var(--success-color)' },
+              { t: '30%', l: '70%', c: 'var(--primary-color)' },
+              { t: '15%', l: '60%', c: 'var(--success-color)' },
+              { t: '75%', l: '25%', c: 'var(--primary-color)' },
+              { t: '50%', l: '80%', c: 'var(--primary-color)' },
+            ].map((m, i) => (
+              <div key={i} style={{ 
+                position: 'absolute', 
+                top: m.t, 
+                left: m.l, 
+                width: 12, 
+                height: 12, 
+                borderRadius: '50%', 
+                background: m.c,
+                boxShadow: `0 0 10px ${m.c}`,
+                animation: 'pulse-marker 2s infinite'
+              }}></div>
+            ))}
+            
+            <style dangerouslySetInnerHTML={{ __html: `
+              @keyframes pulse-marker {
+                0% { transform: scale(1); opacity: 1; }
+                50% { transform: scale(1.5); opacity: 0.5; }
+                100% { transform: scale(1); opacity: 1; }
+              }
+            ` }} />
+            
+            <div className="glass-card" style={{ padding: '1rem', position: 'absolute', bottom: '1rem', left: '1rem', fontSize: '0.75rem' }}>
+              <strong>Fleet Stats:</strong><br/>
+              Chennai: 42 Active<br/>
+              Bangalore: 28 Active<br/>
+              Mumbai: 15 Active
+            </div>
+          </div>
+        </div>
+
         <div className="card" style={{ gridColumn: '1 / -1' }}>
+
           <h3 style={{ marginBottom: '1rem' }}>Recent System Alerts</h3>
           <div className="table-container">
             <table className="table">
@@ -154,4 +232,4 @@ const SystemMonitor = () => {
   );
 };
 
-export default SystemMonitor;
+export default CommandCenter;

@@ -111,7 +111,47 @@ const Settings = () => {
             </div>
           </div>
         </div>
+        <div className="card" style={{ gridColumn: 'span 2' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
+            <Key size={20} color="var(--primary-color)" />
+            <h3 style={{ margin: 0 }}>Developer API Keys</h3>
+          </div>
+          <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+            Use these keys to integrate the H3 Analytics & Crash Reporting SDK into your mobile applications.
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {[
+              { name: 'Selvagam Parent App (Android)', key: 'h3_app_77x29z81', lastUsed: '2 mins ago' },
+              { name: 'Selvagam Driver App (iOS)', key: 'h3_app_12a99v04', lastUsed: '1 hour ago' },
+              { name: 'Chola Cabs Driver (Android)', key: 'h3_app_k99m21p0', lastUsed: 'Never' },
+            ].map((app, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: 'var(--bg-color)', borderRadius: 12, border: '1px solid var(--border-color)' }}>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{app.name}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Last seen: {app.lastUsed}</div>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <code style={{ background: 'var(--surface-color)', padding: '0.4rem 0.75rem', borderRadius: 6, fontSize: '0.85rem', border: '1px solid var(--border-color)' }}>{app.key}</code>
+                  <button className="btn" title="Copy Key" style={{ padding: '0.4rem' }}><Save size={14} /></button>
+                  <button className="btn" title="Regenerate" style={{ padding: '0.4rem', color: 'var(--danger-color)' }}><Database size={14} /></button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'var(--surface-color-hover)', borderRadius: 8, borderLeft: '4px solid var(--primary-color)' }}>
+            <div style={{ fontWeight: 600, fontSize: '0.875rem', marginBottom: '0.5rem' }}>SDK Quick Start (Javascript)</div>
+            <pre style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-secondary)', overflowX: 'auto' }}>
+{`import H3SDK from '@h3-services/sdk';
+
+H3SDK.init({
+  apiKey: 'YOUR_APP_KEY',
+  environment: 'production'
+});`}
+            </pre>
+          </div>
+        </div>
       </div>
+
     </>
   );
 };

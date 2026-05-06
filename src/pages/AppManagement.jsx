@@ -1,6 +1,7 @@
-import { Plus, Settings2, ShieldCheck, ShieldAlert, TrendingUp, Folder, ChevronDown, ChevronRight, CalendarClock, Activity, CheckCircle } from 'lucide-react';
+import { Plus, Settings2, ShieldCheck, ShieldAlert, TrendingUp, Folder, ChevronDown, ChevronRight, CalendarClock, Activity, CheckCircle, Rocket, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import axios from 'axios';
 
 export const clientsData = [
   {
@@ -39,7 +40,29 @@ export const clientsData = [
 const AppManagement = () => {
   const navigate = useNavigate();
   const [expandedClients, setExpandedClients] = useState(['c1', 'c2', 'c3']);
-  const [activeTab, setActiveTab] = useState('Progressing'); // 'Upcoming', 'Progressing', 'Completed'
+  const [activeTab, setActiveTab] = useState('Progressing'); 
+  const [isReleaseModalOpen, setIsReleaseModalOpen] = useState(false);
+  const [selectedApp, setSelectedApp] = useState(null);
+  const [newVersion, setNewVersion] = useState('');
+  const [forceUpdate, setForceUpdate] = useState(false);
+
+  const handleReleaseClick = (app) => {
+    setSelectedApp(app);
+    setNewVersion(app.version);
+    setIsReleaseModalOpen(true);
+  };
+
+  const deployRelease = async () => {
+    try {
+      await axios.post(`http://localhost:5000/api/apps/${selectedApp.id}/release`, {
+        newVersion,
+        forceUpdate
+      });
+      setIsReleaseModalOpen(false);
+    } catch (error) {
+      console.error('Release failed', error);
+    }
+  };
 
   const toggleClient = (clientId) => {
     setExpandedClients(prev => 
@@ -60,11 +83,11 @@ const AppManagement = () => {
     <>
       <div className="page-header" style={{ marginBottom: '1.5rem' }}>
         <div>
-          <h1 className="page-title">Projects</h1>
-          <p className="page-subtitle">Manage client portfolios by delivery state.</p>
+          <h1 className="page-title">Application Hub</h1>
+          <p className="page-subtitle">Centralized management of the H3 Product Portfolio.</p>
         </div>
         <button className="btn btn-primary">
-          <Plus size={18} /> Add New Project
+          <Plus size={18} /> New Application
         </button>
       </div>
 
@@ -76,7 +99,7 @@ const AppManagement = () => {
         >
           <div className="stat-icon" style={{ background: activeTab === 'Upcoming' ? 'var(--primary-color)' : 'var(--bg-color)', color: activeTab === 'Upcoming' ? '#fff' : 'var(--text-secondary)' }}><CalendarClock size={24} /></div>
           <div className="stat-info">
-            <h3 style={{ color: activeTab === 'Upcoming' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.2s' }}>UPCOMING PROJECTS</h3>
+            <h3 style={{ color: activeTab === 'Upcoming' ? 'var(--primary-color)' : 'var(--text-secondary)', fontWeight: 600, fontSize: '0.85rem', transition: 'color 0.2s' }}>UPCOMING APPS</h3>
             <div className="value" style={{ fontSize: '1.75rem' }}>
               {clientsData.reduce((acc, client) => acc + client.projects.filter(p => p.deliveryStatus === 'Pending').length, 0)}
             </div>
@@ -135,7 +158,7 @@ const AppManagement = () => {
                   <Folder color="var(--primary-color)" size={22} />
                   <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{client.clientName}</h3>
                   <div className="badge badge-success" style={{ marginLeft: '1rem', background: 'var(--bg-color)', border: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
-                    {filteredProjects.length} Projects
+                    {filteredProjects.length} Applications
                   </div>
                 </div>
                 <button className="btn" style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem', border: '1px solid var(--border-color)', background: 'var(--surface-color)' }}>Edit Client</button>
@@ -196,11 +219,20 @@ const AppManagement = () => {
                                   {app.deliveryStatus}
                                 </span>
                               </td>
-                              <td style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>{app.deliveryTimeline}</td>
+                              <td>
+                                <button 
+                                  className="btn" 
+                                  onClick={() => handleReleaseClick(app)}
+                                  style={{ fontSize: '0.75rem', padding: '0.25rem 0.5rem', border: '1px solid var(--primary-color)', color: 'var(--primary-color)' }}
+                                >
+                                  Deploy Release
+                                </button>
+                              </td>
                             </>
                           )}
                         </tr>
                       ))}
+
                     </tbody>
                   </table>
                 </div>
@@ -210,11 +242,44 @@ const AppManagement = () => {
         })}
         {clientsData.every(client => filterProjects(client.projects).length === 0) && (
           <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            <h3 style={{ marginBottom: '0.5rem', color: 'var(--text-primary)' }}>No projects found</h3>
-            <p>There are no projects currently in the {activeTab} stage.</p>
+            <h3 style={{ marginBottom: '0.5rem', color: 'var(--text-primary)' }}>No applications found</h3>
+            <p>There are no applications currently in the {activeTab} stage.</p>
           </div>
         )}
       </div>
+
+      {isReleaseModalOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="card glass-card" style={{ width: '400px', padding: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+              <h2 style={{ fontSize: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Rocket className="text-primary" /> Deploy Release</h2>
+              <X style={{ cursor: 'pointer' }} onClick={() => setIsReleaseModalOpen(false)} />
+            </div>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>Deploying new version for <strong>{selectedApp?.name}</strong></p>
+            
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontSize: '0.75rem', marginBottom: '0.25rem' }}>New Version String</label>
+              <input 
+                className="search-bar" 
+                style={{ width: '100%' }} 
+                value={newVersion}
+                onChange={(e) => setNewVersion(e.target.value)}
+                placeholder="e.g. 2.5.0"
+              />
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
+              <input type="checkbox" checked={forceUpdate} onChange={(e) => setForceUpdate(e.target.checked)} />
+              <label style={{ fontSize: '0.875rem' }}>Force Update (Critical Release)</label>
+            </div>
+
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button className="btn btn-primary" style={{ flex: 1 }} onClick={deployRelease}>Deploy Now</button>
+              <button className="btn" style={{ flex: 1, border: '1px solid var(--border-color)' }} onClick={() => setIsReleaseModalOpen(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
