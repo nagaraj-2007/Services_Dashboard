@@ -3,6 +3,8 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Topbar from './components/Topbar';
 import { NotificationProvider } from './components/NotificationProvider';
+import Login from './pages/Login';
+import Breadcrumbs from './components/Breadcrumbs';
 import Dashboard from './pages/Dashboard';
 import AppManagement from './pages/AppManagement';
 import EmployeeManagement from './pages/EmployeeManagement';
@@ -19,6 +21,8 @@ import ProjectAnalytics from './pages/ProjectAnalytics';
 
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -39,30 +43,42 @@ function App() {
 
   return (
     <NotificationProvider>
-      <div className="app-container">
-        <Sidebar />
-        <div className="main-content">
-          <Topbar theme={theme} toggleTheme={toggleTheme} />
-          <div className="page-wrapper">
-            <Routes>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/apps" element={<AppManagement />} />
-              <Route path="/apps/:appId/dashboard" element={<AppDashboard />} />
-              <Route path="/apps/:appId/analytics" element={<ProjectAnalytics />} />
-              <Route path="/apps/:appId/users" element={<AppUsersList />} />
-              <Route path="/apps/:appId/users/:userId" element={<AppUserDetail />} />
-              <Route path="/employees" element={<EmployeeManagement />} />
-              <Route path="/attendance" element={<Attendance />} />
-              <Route path="/employees/:id" element={<EmployeeDetail />} />
-              <Route path="/command-center" element={<CommandCenter />} />
-              <Route path="/accounts" element={<Accounts />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="*" element={<Dashboard />} />
-            </Routes>
+      {!isAuthenticated ? (
+        <Login onLogin={setIsAuthenticated} />
+      ) : (
+        <div className="app-container">
+          <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+          <div className="main-content">
+            <Topbar theme={theme} toggleTheme={toggleTheme} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+            <div className="page-wrapper">
+              <Breadcrumbs />
+              <Routes>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/apps" element={<AppManagement />} />
+                <Route path="/apps/:appId/dashboard" element={<AppDashboard />} />
+                <Route path="/apps/:appId/analytics" element={<ProjectAnalytics />} />
+                <Route path="/apps/:appId/users" element={<AppUsersList />} />
+                <Route path="/apps/:appId/users/:userId" element={<AppUserDetail />} />
+                <Route path="/employees" element={<EmployeeManagement />} />
+                <Route path="/attendance" element={<Attendance />} />
+                <Route path="/employees/:id" element={<EmployeeDetail />} />
+                <Route path="/command-center" element={<CommandCenter />} />
+                <Route path="/accounts" element={<Accounts />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="*" element={<Dashboard />} />
+              </Routes>
+            </div>
           </div>
+          {/* Mobile overlay */}
+          {sidebarOpen && (
+            <div 
+              className="sidebar-overlay" 
+              onClick={() => setSidebarOpen(false)}
+            ></div>
+          )}
         </div>
-      </div>
+      )}
     </NotificationProvider>
   );
 }

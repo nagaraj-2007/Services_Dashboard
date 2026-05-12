@@ -131,9 +131,9 @@ const Dashboard = () => {
                 <Pie
                   data={projectStatusData}
                   cx="50%"
-                  cy="50%"
-                  innerRadius={80}
-                  outerRadius={110}
+                  cy="45%"
+                  innerRadius={70}
+                  outerRadius={95}
                   paddingAngle={5}
                   dataKey="value"
                   stroke="none"
@@ -147,12 +147,12 @@ const Dashboard = () => {
                   contentStyle={{ backgroundColor: 'var(--surface-color)', border: 'none', borderRadius: '0.5rem', boxShadow: 'var(--shadow-md)', zIndex: 1000 }}
                   itemStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
                 />
-                <Legend verticalAlign="bottom" height={36} iconType="circle" />
+                <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '0.85rem', paddingTop: '10px' }} />
               </PieChart>
             </ResponsiveContainer>
             
             <div style={{ position: 'absolute', textAlign: 'center', top: '45%', left: '50%', transform: 'translate(-50%, -50%)', pointerEvents: 'none' }}>
-              <div style={{ fontSize: '2.5rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1 }}>{stats?.totalApps || 17}</div>
+              <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1 }}>{stats?.totalApps || 17}</div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 700, marginTop: '0.25rem' }}>TOTAL<br/>APPS</div>
             </div>
           </div>

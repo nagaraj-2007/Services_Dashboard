@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, AppWindow, Users, Settings, Activity, Server, Calendar, IndianRupee } from 'lucide-react';
+import { LayoutDashboard, AppWindow, Users, Settings, Activity, Server, Calendar, IndianRupee, X } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
 
   const navItems = [
@@ -15,12 +15,17 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-header">
-        <div className="logo-icon">
-          <Server size={28} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div className="logo-icon">
+            <Server size={28} />
+          </div>
+          <div className="sidebar-title">Control Hub</div>
         </div>
-        <div className="sidebar-title">Control Hub</div>
+        <button className="mobile-close-btn" onClick={() => setIsOpen(false)}>
+          <X size={20} color="var(--text-secondary)" />
+        </button>
       </div>
       <nav className="sidebar-nav">
         {navItems.map((item) => {
@@ -31,6 +36,7 @@ const Sidebar = () => {
               key={item.name}
               to={item.path}
               className={`nav-item ${isActive ? 'active' : ''}`}
+              onClick={() => setIsOpen(false)}
             >
               <Icon size={20} />
               <span>{item.name}</span>
