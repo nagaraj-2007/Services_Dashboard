@@ -1,12 +1,6 @@
 import { UserPlus, MoreVertical, Search, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-const employees = [
-  { id: 'E101', name: 'Alice Smith', role: 'Super Admin', dept: 'Engineering', date: '2023-01-15', project: 'Parent App' },
-  { id: 'E102', name: 'Bob Johnson', role: 'Manager', dept: 'Operations', date: '2023-03-22', project: 'Driver App' },
-  { id: 'E103', name: 'Charlie Lee', role: 'Employee', dept: 'Support', date: '2023-06-10', project: 'Match App' },
-  { id: 'E104', name: 'Diana King', role: 'Employee', dept: 'Design', date: '2023-08-05', project: 'Temple App' }
-];
+import { employees } from '../data/employeeData';
 
 const EmployeeManagement = () => {
   const navigate = useNavigate();
@@ -18,7 +12,7 @@ const EmployeeManagement = () => {
           <h1 className="page-title">Employees Directory</h1>
           <p className="page-subtitle">Manage access controls and track productivity across the team.</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={() => navigate('/employees/new')}>
           <UserPlus size={18} /> Invite Colleague
         </button>
       </div>

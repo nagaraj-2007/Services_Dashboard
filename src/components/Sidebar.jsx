@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, AppWindow, Users, Settings, Activity, Server, Calendar, IndianRupee, X } from 'lucide-react';
+import { LayoutDashboard, AppWindow, Users, Settings, Activity, Server, IndianRupee, X, Mail } from 'lucide-react';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
@@ -8,7 +8,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Application Hub', path: '/apps', icon: AppWindow },
     { name: 'Employees', path: '/employees', icon: Users },
-    { name: 'Attendance', path: '/attendance', icon: Calendar },
+    { name: 'Communications', path: '/announcements', icon: Mail },
     { name: 'Command Center', path: '/command-center', icon: Activity },
     { name: 'Accounts', path: '/accounts', icon: IndianRupee },
     { name: 'Settings', path: '/settings', icon: Settings },

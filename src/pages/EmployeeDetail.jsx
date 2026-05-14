@@ -9,7 +9,7 @@ import {
   Calendar, Clock, IndianRupee, Star, CheckCircle2,
   AlertCircle, Trophy
 } from 'lucide-react';
-import { employees } from './Attendance';
+import { employees } from '../data/employeeData';
 
 // ─── Mock data per employee ────────────────────────────────────────────────
 const PROJECTS = {
@@ -52,12 +52,6 @@ const weeklyHours = [
   { day: 'Fri', hours: 8.0 },
 ];
 
-const monthlyAttendance = [
-  { week: 'Wk 1', present: 5, absent: 0, late: 0 },
-  { week: 'Wk 2', present: 4, absent: 1, late: 0 },
-  { week: 'Wk 3', present: 4, absent: 0, late: 1 },
-  { week: 'Wk 4', present: 5, absent: 0, late: 0 },
-];
 
 // ─── Helper Components ─────────────────────────────────────────────────────
 
@@ -75,68 +69,6 @@ const PROJECT_STATUS_COLOR = {
   'Delayed': 'var(--danger-color)',
 };
 
-// Generate a simple calendar for current month
-const AttendanceCalendar = ({ daysPresent }) => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-  // Fake a spread of daysPresent over first N business days
-  const presentDays = new Set();
-  let count = 0;
-  for (let d = 1; d <= daysInMonth && count < daysPresent; d++) {
-    const dow = new Date(year, month, d).getDay();
-    if (dow !== 0 && dow !== 6) { presentDays.add(d); count++; }
-  }
-
-  const cells = [];
-  for (let i = 0; i < firstDay; i++) cells.push(null);
-  for (let d = 1; d <= daysInMonth; d++) cells.push(d);
-
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-  return (
-    <div style={{ overflowX: 'auto' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, minWidth: 280 }}>
-        {dayNames.map(d => (
-          <div key={d} style={{ textAlign: 'center', fontSize: '0.7rem', fontWeight: 600, color: 'var(--text-secondary)', padding: '4px 0' }}>{d}</div>
-        ))}
-        {cells.map((day, i) => {
-          const isToday = day === today.getDate();
-          const isPresent = day && presentDays.has(day);
-          const isWeekend = day && [0, 6].includes(new Date(year, month, day).getDay());
-          return (
-            <div
-              key={i}
-              style={{
-                textAlign: 'center',
-                padding: '6px 4px',
-                borderRadius: '6px',
-                fontSize: '0.75rem',
-                fontWeight: isToday ? 700 : 400,
-                background: isToday ? 'var(--primary-color)' : isPresent ? 'rgba(16,185,129,0.15)' : 'transparent',
-                color: isToday ? '#fff' : isWeekend ? 'var(--text-secondary)' : isPresent ? 'var(--success-color)' : day ? 'var(--text-primary)' : 'transparent',
-                border: isToday ? 'none' : '1px solid transparent',
-              }}
-            >
-              {day || ''}
-            </div>
-          );
-        })}
-      </div>
-      <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', fontSize: '0.75rem', flexWrap: 'wrap' }}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <span style={{ width: 12, height: 12, borderRadius: 3, background: 'var(--primary-color)', display: 'inline-block' }}></span> Today
-        </span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <span style={{ width: 12, height: 12, borderRadius: 3, background: 'rgba(16,185,129,0.25)', display: 'inline-block' }}></span> Present
-        </span>
-      </div>
-    </div>
-  );
-};
 
 // ─── Main Component ────────────────────────────────────────────────────────
 const EmployeeDetail = () => {
@@ -163,11 +95,11 @@ const EmployeeDetail = () => {
       {/* Header */}
       <div className="page-header">
         <button
-          onClick={() => navigate('/attendance')}
+          onClick={() => navigate('/employees')}
           className="btn"
           style={{ gap: '0.5rem', color: 'var(--text-secondary)' }}
         >
-          <ArrowLeft size={18} /> Back to Attendance
+          <ArrowLeft size={18} /> Back to Employees
         </button>
       </div>
 
@@ -190,29 +122,18 @@ const EmployeeDetail = () => {
           </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', alignItems: 'flex-end' }}>
-          <span className={`badge ${emp.status === 'Present' ? 'badge-success' : emp.status === 'Absent' ? 'badge-danger' : 'badge-warning'}`} style={{ fontSize: '0.8rem', padding: '0.3rem 0.75rem' }}>
-            {emp.status} Today
-          </span>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>ID: {emp.id}</span>
         </div>
       </div>
 
       {/* Quick Stats Row */}
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-        <StatMini label="Days Present" value={emp.daysPresent} icon={<CheckCircle2 size={22} />} color="var(--success-color)" />
-        <StatMini label="Days Absent" value={emp.daysAbsent} icon={<AlertCircle size={22} />} color="var(--danger-color)" />
-        <StatMini label="On Leave" value={emp.daysLeave} icon={<Calendar size={22} />} color="var(--warning-color)" />
         <StatMini label="Current Project" value={emp.assignedProject || 'Bench'} icon={<Briefcase size={22} />} color="var(--primary-color)" />
         <StatMini label="Tasks Done" value={tasks.completed || 0} icon={<CheckCircle2 size={22} />} color="#06b6d4" />
       </div>
 
       {/* Main 2-col grid */}
       <div className="grid-2">
-        {/* Attendance Calendar */}
-        <div className="card">
-          <h3 style={{ marginBottom: '1rem' }}>📅 Attendance Calendar - March 2026</h3>
-          <AttendanceCalendar daysPresent={emp.daysPresent} />
-        </div>
 
 
 
@@ -266,25 +187,6 @@ const EmployeeDetail = () => {
           </div>
         </div>
 
-        {/* Attendance trend */}
-        <div className="card chart-card">
-          <h3>📊 Monthly Attendance Breakdown</h3>
-          <div className="chart-container">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyAttendance}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
-                <XAxis dataKey="week" stroke="var(--text-secondary)" />
-                <YAxis stroke="var(--text-secondary)" />
-                <Tooltip
-                  contentStyle={{ background: 'var(--surface-color)', border: 'none', borderRadius: '0.5rem', boxShadow: 'var(--shadow-md)' }}
-                />
-                <Bar dataKey="present" fill="var(--success-color)" name="Present" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="absent" fill="var(--danger-color)" name="Absent" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="late" fill="var(--warning-color)" name="Late" radius={[3, 3, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
 
         {/* Awards & Recognition */}
         <div className="card">

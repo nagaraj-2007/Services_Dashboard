@@ -20,8 +20,18 @@ const Topbar = ({ theme, toggleTheme, toggleSidebar }) => {
         <button className="btn-icon" onClick={toggleTheme}>
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
         </button>
-        <button className="btn-icon">
+        <button className="btn-icon" onClick={() => navigate('/notifications')} style={{ position: 'relative' }}>
           <Bell size={20} />
+          <span style={{ 
+            position: 'absolute', 
+            top: '2px', 
+            right: '2px', 
+            width: '8px', 
+            height: '8px', 
+            background: 'var(--danger-color)', 
+            borderRadius: '50%',
+            border: '2px solid var(--surface-color)'
+          }}></span>
         </button>
         <div className="avatar" onClick={() => navigate('/profile')} title="View Profile">AD</div>
       </div>

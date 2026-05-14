@@ -92,10 +92,10 @@ const AppManagement = () => {
           <p className="page-subtitle">Centralized management of the H3 Product Portfolio.</p>
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>
-          <button className="btn" style={{ background: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
+          <button className="btn" onClick={() => navigate('/apps/new-client')} style={{ background: 'var(--surface-color)', border: '1px solid var(--border-color)' }}>
             <Folder size={18} /> New Client
           </button>
-          <button className="btn btn-primary">
+          <button className="btn btn-primary" onClick={() => navigate('/apps/new-app')}>
             <Plus size={18} /> New Application
           </button>
         </div>
@@ -140,53 +140,52 @@ const AppManagement = () => {
         })}
       </div>
 
-      {/* Beautiful App Grid */}
+      {/* Beautiful App List */}
       {displayedProjects.length > 0 ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem', paddingBottom: '2rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: '2rem' }}>
           {displayedProjects.map(app => (
             <div 
               key={app.id} 
               className="card"
               onClick={() => navigate(`/apps/${app.id}/dashboard`)}
               style={{ 
-                padding: '1.5rem', 
+                padding: '1.25rem 1.5rem', 
                 display: 'flex', 
-                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '2rem',
                 cursor: 'pointer',
                 position: 'relative',
                 overflow: 'hidden'
               }}
             >
-              {/* Top Accent Line based on status */}
+              {/* Left Accent Line based on status */}
               <div style={{ 
-                position: 'absolute', top: 0, left: 0, right: 0, height: '4px',
+                position: 'absolute', top: 0, bottom: 0, left: 0, width: '4px',
                 background: app.status === 'Healthy' ? 'var(--success-color)' : (app.status === 'Warning' ? 'var(--warning-color)' : 'var(--text-secondary)')
               }}></div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', marginTop: '0.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ 
-                    width: '48px', height: '48px', borderRadius: '12px', 
-                    background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1))', 
-                    color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' 
-                  }}>
-                    {getPlatformIcon(app.platform)}
-                  </div>
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{app.name}</h3>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                      <Folder size={12} /> {app.clientName}
-                    </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 250px', minWidth: '200px' }}>
+                <div style={{ 
+                  width: '48px', height: '48px', borderRadius: '12px', flexShrink: 0,
+                  background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1))', 
+                  color: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' 
+                }}>
+                  {getPlatformIcon(app.platform)}
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{app.name}</h3>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                    <Folder size={12} /> {app.clientName}
                   </div>
                 </div>
               </div>
 
-              <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', flex: 1, lineHeight: 1.5 }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0, flex: '2 1 400px', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                 {app.gist}
               </p>
 
               {/* Status and version pills */}
-              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', flex: '1 1 200px', justifyContent: 'flex-start' }}>
                 <span className="badge badge-success" style={{ background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary-color)' }}>
                   v{app.version}
                 </span>
@@ -202,7 +201,7 @@ const AppManagement = () => {
               </div>
 
               {/* Footer Actions */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem', flex: '0 0 120px' }}>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
                   {activeTab === 'Upcoming' ? `Launch: ${app.deliveryTimeline}` : app.platform}
                 </div>
@@ -213,11 +212,11 @@ const AppManagement = () => {
                     onClick={(e) => { e.stopPropagation(); handleReleaseClick(app); }}
                     style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem', border: '1px solid var(--primary-color)', color: 'var(--primary-color)', background: 'transparent' }}
                   >
-                    Deploy Release
+                    Deploy
                   </button>
                 ) : (
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem', color: 'var(--primary-color)', fontWeight: 600 }}>
-                    View Setup <ChevronRight size={14} />
+                    Setup <ChevronRight size={14} />
                   </div>
                 )}
               </div>
@@ -233,7 +232,7 @@ const AppManagement = () => {
           <h3 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '1.5rem' }}>No {activeTab} Applications</h3>
           <p style={{ maxWidth: '400px', margin: 0 }}>There are currently no applications in the {activeTab} stage. When new projects are assigned, they will appear here.</p>
           {activeTab === 'Upcoming' && (
-            <button className="btn btn-primary" style={{ marginTop: '1rem' }}>
+            <button className="btn btn-primary" onClick={() => navigate('/apps/new-app')} style={{ marginTop: '1rem' }}>
               <Plus size={18} /> Create New Application
             </button>
           )}

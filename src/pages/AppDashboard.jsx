@@ -63,14 +63,6 @@ const AppDashboard = () => {
           </div>
         </div>
         
-        {/* VIEW ANALYTICS BUTTON */}
-        <button 
-          className="btn btn-primary" 
-          style={{ gap: 8, padding: '0.6rem 1.25rem', fontSize: '0.9rem', background: 'var(--primary-color)' }}
-          onClick={() => navigate(`/apps/${appId}/analytics`)}
-        >
-          <LayoutGrid size={16} /> View Deep Analytics
-        </button>
       </div>
 
       <div className="grid-2" style={{ gridTemplateColumns: '1fr 3fr', alignItems: 'start', marginBottom: '1.5rem' }}>

@@ -7,8 +7,9 @@ import Login from './pages/Login';
 import Breadcrumbs from './components/Breadcrumbs';
 import Dashboard from './pages/Dashboard';
 import AppManagement from './pages/AppManagement';
+import NewClient from './pages/NewClient';
+import NewApplication from './pages/NewApplication';
 import EmployeeManagement from './pages/EmployeeManagement';
-import Attendance from './pages/Attendance';
 import EmployeeDetail from './pages/EmployeeDetail';
 import CommandCenter from './pages/SystemMonitor';
 import Settings from './pages/Settings';
@@ -18,6 +19,9 @@ import Accounts from './pages/Accounts';
 import AppUsersList from './pages/AppUsersList';
 import AppUserDetail from './pages/AppUserDetail';
 import ProjectAnalytics from './pages/ProjectAnalytics';
+import NewEmployee from './pages/NewEmployee';
+import Notifications from './pages/Notifications';
+import Announcements from './pages/Announcements';
 
 function App() {
   const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
@@ -55,15 +59,19 @@ function App() {
               <Routes>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/apps" element={<AppManagement />} />
+                <Route path="/apps/new-client" element={<NewClient />} />
+                <Route path="/apps/new-app" element={<NewApplication />} />
                 <Route path="/apps/:appId/dashboard" element={<AppDashboard />} />
                 <Route path="/apps/:appId/analytics" element={<ProjectAnalytics />} />
                 <Route path="/apps/:appId/users" element={<AppUsersList />} />
                 <Route path="/apps/:appId/users/:userId" element={<AppUserDetail />} />
                 <Route path="/employees" element={<EmployeeManagement />} />
-                <Route path="/attendance" element={<Attendance />} />
+                <Route path="/employees/new" element={<NewEmployee />} />
                 <Route path="/employees/:id" element={<EmployeeDetail />} />
                 <Route path="/command-center" element={<CommandCenter />} />
                 <Route path="/accounts" element={<Accounts />} />
+                <Route path="/announcements" element={<Announcements />} />
+                <Route path="/notifications" element={<Notifications />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="*" element={<Dashboard />} />
